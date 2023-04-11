@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 7000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 app.use(express.json());
@@ -26,19 +26,29 @@ async function run() {
       
 
     //   get all data
-    app.get("/", async (req, res) => {
-        const query = {  };
+    app.get("/users", async (req, res) => {
+        const query = {};
         const cursor = usersdata.find(query);
         const results = await cursor.toArray()
         res.send(results);
 
     })
     //   post a data
-    app.post("/user", async(req, res) => {
+    app.post("/users", async(req, res) => {
         const user = req.body
         const result = await usersdata.insertOne(user);
-        console.log(user)
         res.send(result);
+        console.log(user)
+    })
+    // delete a data
+    app.delete("/users/:id", async (req, res) => {
+        const id = req.params.id;
+        const query= {_id: new ObjectId(id)}
+        const result = await usersdata.deleteOne(query);
+        if (result.deletedCount === 1) {
+            console.log("Successfully deleted one document.");
+            res.send(result);
+          } 
     })
       
     } finally {
