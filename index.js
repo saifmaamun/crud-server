@@ -33,6 +33,15 @@ async function run() {
         res.send(results);
 
     })
+    // get single data
+    app.get("/users/:id", async (req, res) => {
+        const id =req.params.id;
+        const query = {_id:new ObjectId(id)};
+        const result = await usersdata.findOne(query);
+        console.log(result)
+        res.send(result)
+
+    })
     //   post a data
     app.post("/users", async(req, res) => {
         const user = req.body
@@ -45,7 +54,7 @@ async function run() {
         const id = req.params.id;
         const query= {_id: new ObjectId(id)}
         const result = await usersdata.deleteOne(query);
-        if (result.deletedCount === 1) {
+        if (result.deletedCount > 1) {
             console.log("Successfully deleted one document.");
             res.send(result);
           } 
